@@ -1,0 +1,69 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="zh-CN"> 
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /> 
+	<title>KIS 711 管理平台</title> 
+	<meta name="description" content="" /> 
+	<meta name="keywords" content="" /> 
+	<link rel="stylesheet" type="text/css" href="/static/css/admin.css" media="screen" /> 
+	<script type="text/javascript" src="/static/js/jquery.1.4.min.js"></script>
+	<link rel='index' title='' href='/' /> 
+	<script type="text/javascript"> 
+		function checkAjaxLogin(r){
+			if (r.need_login) {
+				alert('需要登录');
+				window.location.href = '/user/login/?return_url=' + window.location.pathname;
+				return false;
+			}
+			return true;
+		}
+		function getAjaxError(r){
+			if(r.error){
+				var err = r.error;
+				if(typeof err !== 'string'){
+					err = '';
+					for(var k in r.error){
+						err += r.error[k] + '\r\n';
+					}
+				}
+				return err;
+			}else{
+				return '未知错误';
+			}
+		}
+		$(document).ready(function(){
+			$("#pageloading").hide();
+		});
+	</script>
+</head> 
+<body> 
+	<div id='pageloading'>正在加载...</div> 
+	<div id="container"> 
+		<div id="header">
+			<div class="intro"> 
+				<div class="top-user-bar">
+					<?js if(it.req.user){ ?>
+					<span>#{it.req.user.name},你好!</span> 
+					<a href="/user/logout">退出</a>
+					<?js }else{ ?>
+					<a href="/user/login">登录</a>
+					<?js } ?>
+				</div>
+				<h1><a href="/admin/">KIS 711 管理平台</a></h1> 
+				<div class="description">你的专属小卖部【<a href="/">去 kis 711 首页</a>】</div> 
+			</div>
+			<div class="nav"> 
+				<ul class="clearfix">
+					<li><a href="/admin/">首页</a></li>
+					<li><a href="/admin/goods">商品管理</a></li>
+					<li><a href="/admin/users">用户管理</a></li>
+					<li><a href="/admin/inventory">库存</a></li> 
+					<span style="float:right;">
+					</span>
+				</ul>
+			</div>
+		</div>
+		<div id="content">
+		

@@ -1,0 +1,74 @@
+{# ../../header.html #}
+
+<?js if(it.vd.goods){ ?>
+	<script type="text/javascript" src="/static/js/jquery.1.4.min.js"></script>
+	<div class="goodsArea">
+        <div class="bigpic"> <img src="/static/images/goods/n/#{it.vd.goods.image_name}" width="350" height="350" /></div>
+        <div class="buyInfo">
+            <div>
+                <p class="title">${it.vd.goods.title}</p>
+                <p>售　　价：<span id="price">￥#{it.vd.goods.value}</span></p>
+                <p>进货价格：<span id="o_price">￥#{it.vd.goods.price}</span>　　
+				   公司补贴：<span>￥#{it.vd.goods.price-it.vd.goods.value}</span>
+				</p>
+                <p>已　　售：<span id="">#{it.vd.goods.sales||0}</span>　　
+				   库　　存：<span>#{it.vd.goods.stocks}</span>
+				</p>
+                <p>购买数量：<span>
+                    <input class="buynum" type="text" size="4" id="buyCount" value="1" />
+                    </span></p>
+                <p style="margin-top:10px;">
+                    <input id="btnBuy" type="button" class="minibutton green" value="购 买" />
+                    &nbsp;</p>
+				<?js if(it.vd.goods.buyers){ ?>
+				<p> <br/>
+					他们购买了:
+					<?js for(var i=0, l=it.vd.goods.buyers.length; i<l; i++){ ?>
+						<a href="###">${it.vd.goods.buyers[i]}</a>
+					<?js } ?>
+				</p>
+				<?js } ?>
+            </div>
+        </div>
+    </div>
+	
+<script type="text/javascript">
+	var goodsId = '#{it.vd.goods._id}';
+	$(function(){
+		$("#btnBuy").click(function(){
+			var count = Number( $("#buyCount").val() );
+			if(isNaN(count) || count<1){
+				alert('请正确填写购买数量');
+				return;
+			}else if(count > #{it.vd.goods.stocks}){
+				alert('你购买的数量已经超过库存，请修改');
+				return;
+			}
+			if(!confirm('你确定要购买'+count+'件“#{it.vd.goods.title}”吗？')){
+				return;
+			}
+			var _btn = $(this);
+			_btn.attr('disabled', true);
+			$.post('/goods/buy/', {id:goodsId, quantity:count}, function(r){
+				if(r.success){
+					window.location.href = "/bill/buy_success/" + r.bill._id;
+				}else{
+					if (r.need_login) {
+						alert('需要登录');
+						window.location.href = '/user/login/?return_url=' + window.location.pathname;
+					} else {
+						alert('购买失败: ' + r.error);
+					}
+				}
+				_btn.removeAttr('disabled');
+			});
+		});
+	});
+	
+</script>
+	
+<?js }else{ ?>
+	<h3>你要查看的商品不存在哦</h3>
+<?js } ?>
+
+{# ../../footer.html #}

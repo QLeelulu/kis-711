@@ -1,0 +1,23 @@
+{# ../../header.html #}
+	
+<?js if(it.vd.bill){ ?>
+
+<div class="buyStips">
+  <p style="font-size:14px; line-height:30px;"><img style="float:left; margin-right:15px;" src="/static/images/mm.gif" width="105" height="140" /><br />还等什么！快去拿吧！<br />
+10F—区域冰箱<br />
+11F/12F—茶水间冰箱</p>
+<div class="txt">
+ <p style="font-size:20px; font-weight:bold; color:#0C3; font-family:'微软雅黑', Arial;">成功购买 <em>${it.vd.bill.goods_title}</em> </p>
+ <p style="font-size:14px; line-height:40px;">
+ 	数量：<em>#{it.vd.bill.quantity}</em>  &nbsp;&nbsp; 
+ 	一共需要支付：<em>￥#{it.vd.bill.quantity * it.vd.bill.value}</em> 
+ </p>
+</div>
+    
+</div>
+
+<?js }else{ ?>
+	<div>咦，你跑错地方了吧？</div>
+<?js } ?>
+
+{# ../../footer.html #}

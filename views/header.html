@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>金山网络-小卖部</title>
+<link rel="stylesheet" type="text/css" href="/static/css/main.css" media="screen" /> 
+<script type="text/javascript">
+	function addBookmark(a,b)
+	{
+	    try{ window.external.AddFavorite(a,b); } catch(e){ (window.sidebar)?window.sidebar.addPanel(b,a,""):alert('请使用按键 Ctrl+d，收藏本站'); }
+	}
+</script>
+</head>
+
+<body>
+<div class="header"><img src="/static/images/head.png" width="1025" height="75" usemap="#headLogoMap" /></div>
+<map name="headLogoMap" id="headLogoMap"><area shape="rect" coords="0,6,217,65" href="/"></area></map>
+<div class="pagebody">
+    <div class="function">
+        <p>
+        	<?js if(it.req.user){ ?>
+			<span class="name">#{it.req.user.name}</span>, 欢迎来解馋！ | <a href="/bill/my">购买记录</a> | <a href="/user/logout">退出</a>
+			<?js }else{ ?>
+			<a href="/user/login">登录</a>
+			<?js } ?>
+			 | <a href="javascript:addBookmark('/', '金山网络-小卖部');">加入收藏</a> 
+		</p>
+        <div class="tips">提示：10F位于区域冰箱，11F、12F位于茶水间冰箱&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;有疑问联系助理MM</div>
+		<a class="back" href="/">返回首页</a>
+    </div>
+	<?js if(it.req.user && !it.req.user.payment_type){ ?>
+	<div class="paymentTips">
+		你还没有设置结算方式，<a href="/bill/my">点此去设置吧</a>，默认从工资里面扣。
+	</div>
+	<?js } ?>
+	

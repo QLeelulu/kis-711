@@ -1,0 +1,25 @@
+{# ../../header.html #}
+	
+<div class="main">
+	<?js if(it.vd.bill){ ?>
+	<h3 class="title">订单信息</h3>
+	<div class="bill_detail">
+		<div>购买日期：#{it.vd.bill.created_at.format('yyyy-MM-dd hh:mm:ss')}</div>
+		<div>购买商品：${it.vd.bill.goods_title}</div>
+		<div>商品售价：¥#{it.vd.bill.value}</div>
+		<div>购买数量：#{it.vd.bill.quantity}</div>
+		<div>订单总价：#{it.vd.bill.quantity} * #{it.vd.bill.value} = ¥#{it.vd.bill.quantity * it.vd.bill.value}</div>
+		<br/>
+		<a href="/bill/my">查看我的购买历史</a>
+	</div>
+	<?js }else{ ?>
+		<h3>你要查看的订单不存在</h3>
+	<?js } ?>
+	
+</div>
+
+<div class="sidebar">
+</div>
+
+
+{# ../../footer.html #}

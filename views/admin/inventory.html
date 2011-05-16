@@ -1,0 +1,68 @@
+{# ../admin_header.html #}
+
+	<script type="text/javascript" src="/static/js/My97DatePicker/WdatePicker.js"></script>
+	<h4>库存信息</h4>
+	<form>
+		开始日期:<input type="text" id="dateStart" name="ds" value="#{it.vd.dateStart || ''}" onFocus="WdatePicker({readOnly:true,minDate:'2011-05-1',maxDate:'%y-%M-%d'})" />
+		<img onclick="WdatePicker({el:'dateStart',minDate:'2011-05-1',maxDate:'%y-%M-%d'})" src="/static/js/My97DatePicker/skin/datePicker.gif" width="16" height="22" align="absmiddle">
+		结束日期:<input type="text" id="dateEnd" name="de" value="#{it.vd.dateEnd || ''}" onFocus="WdatePicker({readOnly:true,minDate:'#F{$dp.$D(\'dateStart\')}',maxDate:'%y-%M-%d'})" />
+		<img onclick="WdatePicker({el:'dateEnd',minDate:'#F{$dp.$D(\'dateStart\')}',maxDate:'%y-%M-%d'})" src="/static/js/My97DatePicker/skin/datePicker.gif" width="16" height="22" align="absmiddle">
+		<button class="minibutton" type="submit">确 定</button>
+	</form>
+	<div>
+	<?js if(it.vd.inventories && it.vd.inventories.length){ 
+		 var total = {
+		 	cStocks: 0, //进货数量
+			cLoss: 0, //损耗数量
+			mStocks: 0, //进货金额
+			mLoss: 0 //损耗金额
+		 };
+	?>
+	<table>
+		<tr>
+			<th>日期</th>
+			<th>类型</th>
+			<th>数量</th>
+			<th>进货价</th>
+			<th>合计</th>
+			<th>操作者</th>
+			<th>商品名</th>
+		</tr>
+		<?js for(var i=0, l=it.vd.inventories.length; i<l; i++){
+			 var inv = it.vd.inventories[i];
+			 if(inv.type === 0){
+			 	total.cLoss += inv.quantity;
+				total.mLoss += (inv.quantity * inv.price);
+			 }else{
+			 	total.cStocks += inv.quantity;
+				total.mStocks += (inv.quantity * inv.price);
+			 }
+		?>
+		<tr inv="#{inv._id}" class="<?js if(inv.type===0){ ?>warn<?js } ?>">
+			<td class="specalt" title="#{inv.created_at && inv.created_at.format('yyyy-MM-dd hh:mm:ss')}">#{inv.created_at && inv.created_at.format('yyyy-MM-dd')}</td>
+			<td><?js if(inv.type === 0){ ?>损耗<?js }else if(inv.type === 1){ ?>进货<?js }else{ ?>未知<?js } ?></td>
+			<td>#{inv.quantity}</td>
+			<td>￥#{inv.price}</td>
+			<td>￥#{inv.price * inv.quantity}</td>
+			<td>#{inv.user_name}</td>
+			<td>#{inv.goods_title}</td>
+		</tr>
+		<?js } ?>
+		<tr>
+			<th>合计</th>
+			<th class="specalt" colspan="15">
+				进货量：#{total.cStocks}， 进货金额：￥#{total.mStocks} <br/>
+				损耗量：#{total.cLoss}， 损耗金额：￥#{total.mLoss} <br/>
+				损耗率：#{(total.cLoss/total.cStocks*100).toFixed(2) + '%'}
+			</th>
+		</tr>
+	</table>
+	<?js }else{ ?>
+		<div style="color:red;">没有库存信息</div>
+	<?js } ?>
+	</div>
+	
+	<script type="text/javascript">
+	</script>
+
+{# ../admin_footer.html #}

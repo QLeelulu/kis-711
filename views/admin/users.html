@@ -1,0 +1,41 @@
+{# ../admin_header.html #}
+
+
+	<script type="text/javascript" src="/static/js/My97DatePicker/WdatePicker.js"></script>
+	<h4 class="title">用户管理  (<a href="/admin/admin_users">管理员管理</a>)</h4>
+	<form>
+		开始日期:<input type="text" id="dateStart" name="ds" value="#{it.vd.dateStart || ''}" onFocus="WdatePicker({readOnly:true,minDate:'2011-05-1',maxDate:'%y-%M-%d'})" />
+		<img onclick="WdatePicker({el:'dateStart',minDate:'2011-05-1',maxDate:'%y-%M-%d'})" src="/static/js/My97DatePicker/skin/datePicker.gif" width="16" height="22" align="absmiddle">
+		结束日期:<input type="text" id="dateEnd" name="de" value="#{it.vd.dateEnd || ''}" onFocus="WdatePicker({readOnly:true,minDate:'#F{$dp.$D(\'dateStart\')}',maxDate:'%y-%M-%d'})" />
+		<img onclick="WdatePicker({el:'dateEnd',minDate:'#F{$dp.$D(\'dateStart\')}',maxDate:'%y-%M-%d'})" src="/static/js/My97DatePicker/skin/datePicker.gif" width="16" height="22" align="absmiddle">
+		<button class="minibutton" type="submit">确 定</button>
+	</form>
+	<div>
+	<?js if(it.vd.users && it.vd.users.length){ ?>
+	<ul class="userlist">
+		<?js for(var i=0, l=it.vd.users.length; i<l; i++){
+			 var user = it.vd.users[i];
+		?>
+		<li class="<?js if(i%2===0){ ?>even<?js } ?>">
+			<b>#{user.name}</b>
+			[结算方式：<?js if(user.payment_type=='cash'){ ?>现金<?js }else if(user.payment_type=='wage'){ ?>工资扣<?js }else{ ?>默认-工资扣<?js } ?>]
+			(<a href="/admin/user_detail/#{user._id}?ds=#{it.vd.dateStart || ''}&de=#{it.vd.dateEnd || ''}">查看详情</a>)
+			<div class="detail">
+			<?js if(user.bills_total){ ?>
+				订单数：#{user.bills_total.bills} &nbsp;
+				商品数：#{user.bills_total.quantity} &nbsp;
+				总价值：¥#{user.bills_total.price.toFixed(2)} &nbsp;
+				总花费：¥#{user.bills_total.value.toFixed(2)} &nbsp;
+				总补贴：¥#{ ( (user.bills_total.price || 0) - (user.bills_total.value || 0) ).toFixed(2) } &nbsp;
+			<?js }else{ ?>
+				无订单
+			<?js } ?>
+			</div>
+		</li>
+		<?js } ?>
+	</ul>
+	<?js } ?>
+	</div>
+
+
+{# ../admin_footer.html #}

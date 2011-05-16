@@ -1,0 +1,179 @@
+{# ../admin_header.html #}
+
+
+	<h1><a href="/admin/goods_add" class="minibutton blue">添加商品</a></h1><br/>
+	<div>
+	<?js if(it.vd.goods && it.vd.goods.length){ ?>
+	<ul class="goodslist">
+		<?js for(var i=0, l=it.vd.goods.length; i<l; i++){
+			 var goods = it.vd.goods[i];
+		?>
+		<li gid="#{goods._id}" class="<?js if(i%2===0){ ?>even<?js } ?>">
+			<a class="goods_img" target="_blank" href="/goods/show/#{goods._id}">
+				<img src="/static/images/goods/s/#{goods.image_name}" />
+			</a>
+			<div class="info">
+				<p>
+					(<a target="_blank" href="/goods/show/#{goods._id}">前台查看</a>)
+					<b class="goods_title">${goods.title}</b>
+					<?js if(goods.recommend){ ?>
+					<span class="recommend">推荐</span>
+					<?js } ?>
+				</p>
+				<p class="stat">	
+					进货价:<del>¥<span class="price">#{goods.price}</span></del>, 
+					售价:¥#{goods.value}, 
+					已售:#{goods.sales||0}, 
+					<span class="<?js if(goods.stocks < 1){ ?> nostocks <?js } ?>">库存:#{goods.stocks}</span>
+				</p>
+				<p class="edit">
+					<a href="/admin/goods_edit/#{goods._id}" class="minibutton">编辑</a>
+					<a href="javascript:" class="minibutton purchase">进货</a>
+					<a href="javascript:" class="minibutton loss">损耗</a>
+				</p> 
+			</div>
+			
+		</li>
+		<?js } ?>
+	</ul>
+	<?js } ?>
+	</div>
+	
+	<div id="purchase" style="display:none;">
+		进货价：<input type="text" class="price" />
+		进货数量：<input type="text" class="count" />
+		<button class="minibutton green submit">确认进货</button>
+		<a href="javascript:" onclick="$(this).parent().hide();">取消</a>
+	</div>
+	
+	<div id="loss" style="display:none;">
+		损耗量：<input type="text" class="count" />
+		<button class="minibutton green submit">确认损耗</button>
+		<a href="javascript:" onclick="$(this).parent().hide();">取消</a>
+	</div>
+
+	<script type="text/javascript">
+		function hideAllEdit(){
+			$("#purchase, #loss").hide();
+			$("#purchase input, #loss input").val('');
+		}
+		// 进货
+		$(".goodslist .edit .purchase").click(function(){
+			var _t = $(this), f = $("#purchase");
+			hideAllEdit();
+			_t.closest('li').append(f.show());
+		});
+		$("#purchase .submit").click(function(){
+			doInventory(this, 1);
+		});
+		
+		//损耗
+		$(".goodslist .edit .loss").click(function(){
+			var _t = $(this), f = $("#loss");
+			hideAllEdit();
+			_t.closest('li').append(f.show());
+		});
+		$("#loss .submit").click(function(){
+			doInventory(this, 0);
+		});
+		
+		function doInventory(btn, type){
+			var _t = $(btn), data = null, f = null, msg = '';
+			if (type === 0) { //损耗
+				f = $("#loss");
+				data = {
+					goods_id: _t.closest('li').attr('gid'),
+					type: 0,
+					price: _t.closest('li').find('.stat .price').text(),
+					quantity: f.find('.count').val()
+				};
+				msg = '你确定“'+ f.closest('li').find('.goods_title').html() +'”出现损耗吗？\r\n'
+					 +'进货价：￥' + data.price
+					 +'\r\n损耗数量：' + data.quantity
+					 +'\r\n损耗金额：￥' + (data.price * data.quantity);
+			}else if(type === 1){ //进货
+				f = $("#purchase");
+				data = {
+					goods_id: _t.closest('li').attr('gid'),
+					type: 1,
+					price: f.find('.price').val(),
+					quantity: f.find('.count').val()
+				};
+				msg = '你确定“'+ f.closest('li').find('.goods_title').html() +'”进货吗？\r\n'
+					 +'进货价：￥' + data.price
+					 +'\r\n进货数量：' + data.quantity
+					 +'\r\n进货金额：￥' + (data.price * data.quantity);
+			}else{
+				return;
+			}
+			if(!confirm(msg)){ return; }
+			_t.attr('disabled', true);
+			$.ajax({
+				url: '/admin/goods_inventory',
+				type: 'post',
+				data: data,
+				success: function(r){
+					if(r.success){
+						if(r.inventory.type === 1){
+							alert('进货成功。\r\n本次进货 ' 
+								+ r.inventory.quantity + '件 “'  
+								+ _t.closest('li').find('.goods_title').html() + '”\r\n' 
+								+ '进货价为: ￥' + r.inventory.price 
+								+ '\r\n进货成本为: ￥' + (r.inventory.quantity * r.inventory.price)
+							);
+						}else{
+							alert('增加损耗成功。\r\n本次损耗 ' 
+								+ r.inventory.quantity + '件 “' 
+								+ _t.closest('li').find('.goods_title').html() +'”\r\n' 
+								+ '进货价为: ￥' + r.inventory.price 
+								+ '\r\n损耗成本为: ￥' + (r.inventory.quantity * r.inventory.price)
+							);
+						}
+						hideAllEdit();
+						window.location.reload();
+					}else{
+						if(checkAjaxLogin(r)){
+							alert('操作失败: \r\n' + getAjaxError(r));
+						}
+					}
+				},
+				error: function(r){
+					alert('操作失败，请重试')
+				},
+				complete: function(){
+					_t.removeAttr('disabled');
+				}
+			});
+		}
+		
+		/* 需求改了，暂时无用
+		$(".change_sale").click(function(){
+			var _t = $(this),
+				cStatus = _t.hasClass('danger') ? 0 : 1;
+			if(!cStatus && !confirm('你确定强制下架该商品吗？')){
+				return;
+			}
+			_t.attr('disabled', true);
+			_t.parent().append('<img class="loading" src="/static/images/loading.gif/>"');
+			$.post('/admin/goods_change_sale_status', 
+				   {goods_id: _t.closest('li').attr('gid'), sale_status: cStatus}, 
+				   function(r){
+						_t.removeAttr('disabled').parent().find('.loading').remove();
+						if(r.success){
+							if(cStatus){//重新上架成功
+								_t.removeClass('green').addClass('danger').html('强制下架');
+								_t.closest('li').find('.stat .not_on_sale').remove();
+							}else{
+								_t.removeClass('danger').addClass('green').html('重新上架');
+								_t.closest('li').find('.stat').append('<span class="not_on_sale">已强制下架</span>');
+							}
+						}else{
+							alert('操作失败：'+r.error);
+						}
+				  }
+			);
+		});
+		*/
+	</script>
+
+{# ../admin_footer.html #}

@@ -1,0 +1,40 @@
+{# ../../header.html #}
+	
+<div class="goodsArea">
+	<?js if(it.vd.re_goods && it.vd.re_goods.length){ ?>
+	<h2 class="new">新品推荐</h2>
+    <ul class="list">
+    	<?js for(var i=0, l=it.vd.re_goods.length; i<l; i++){
+			 var goods = it.vd.re_goods[i];
+		?>
+		<li>
+			<a href="/goods/show/#{goods._id}">
+				<img src="/static/images/goods/s/#{goods.image_name}" width="168" height="168" />
+			</a>
+			<p class="title"><a href="/goods/show/#{goods._id}">${goods.title}</a></p>
+            <p class="left"><em class="price">￥#{goods.value}</em>&nbsp;&nbsp;&nbsp;剩余：<em class="num">#{goods.stocks||0}</em></p>
+            <p class="right"><a href="/goods/show/#{goods._id}" class="buybtn">购买</a></p>
+		</li>
+		<?js } ?>
+	</ul>
+	<?js } ?>
+	
+	<h2 class="all">现有商品</h2>
+	<?js if(it.vd.goods && it.vd.goods.length){ ?>
+	<ul class="list">
+		<?js for(var i=0, l=it.vd.goods.length; i<l; i++){
+			 var goods = it.vd.goods[i];
+		?>
+		<li>
+			<a href="/goods/show/#{goods._id}">
+				<img src="/static/images/goods/s/#{goods.image_name}" width="168" height="168" />
+			</a>
+			<p class="title"><a href="/goods/show/#{goods._id}">${goods.title}</a></p>
+            <p class="left"><em class="price">￥#{goods.value}</em>&nbsp;&nbsp;&nbsp;剩余：<em class="num">#{goods.stocks||0}</em></p>
+            <p class="right"><a href="/goods/show/#{goods._id}" class="buybtn">购买</a></p>
+		</li>
+		<?js } ?>
+	</ul>
+	<?js } ?>
+</div>
+{# ../../footer.html #}

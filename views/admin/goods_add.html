@@ -1,0 +1,134 @@
+{# ../admin_header.html #}
+	
+
+<link rel="stylesheet" type="text/css" href="/static/css/form.css" media="screen" /> 
+<link rel="stylesheet" type="text/css" href="/static/css/tooltip.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="/static/fileuploader/fileuploader.css" media="screen" />
+
+<div class="main">
+	<h3 class="title">添加商品</h3>
+	<form id="addGoodsForm" method="post" class="simple_form">
+		<ul>
+			<li>
+				<label for="title">商品名称(标题):</label>
+				<input type="text" name="title" value="" reg="^.{2,100}$" tip="商品的名称、标题" style="width:600px;" />
+			</li>
+			<li>
+				<label for="value">售价:</label>
+				<input type="text" name="value" class="inp" reg="^[0-9]+(\.[0-9]*)?$" tip="商品的销售价格">
+			</li>
+			<!-- 
+			<li>
+				<label for="price">进货价:</label>
+				<input type="text" name="price" class="inp" reg="^[0-9]+(\.[0-9]*)?$" tip="商品的实际进货价">
+			</li>
+			<li>
+				<label for="stocks">库存:</label>
+				<input type="text" name="stocks" class="inp" reg="^\d+$" tip="商品的剩余的库存数量">
+			</li>
+			-->
+			<li>
+				<label for="recommend" style="display:inline;">新品推荐:</label>
+				<input type="checkbox" value="1" name="recommend" id="recommend"/>
+			</li>
+			<li>
+				<label for="des">商品的介绍:</label>
+				<textarea name="des" reg="^[.\w\s\S]{0,500}$" tip="商品的一些说明、介绍" style="width:600px; height:100px;"></textarea>
+			</li>
+			<li>
+				<label for="image" style="display:inline;">商品图片:</label>
+				<input type="button" id="image-uploader" class="minibutton" value="选择图片" />
+				<span type="text" id="text_upload_file" disabled="true" ></span>
+			</li>
+			<li id="showMsg" class="msgInfo"></li>
+			<li><br/><button type="submit" id="btnAdd" class="minibutton blue"> 录 入 </button></li>
+		<ul>
+	
+	</form>
+	
+	<script type="text/javascript" src="/static/js/tooltip.js"></script>
+	<script type="text/javascript" src="/static/fileuploader/ajaxupload.js"></script>
+	<script type="text/javascript">
+		function disabledUploadForm(){
+			$('#addGoodsForm input, #addGoodsForm textarea').attr('disabled', true);
+    		$('.submitBtnArea .loading').show();
+		};
+		
+		function enabledUploadForm(){
+			$('#addGoodsForm input, #addGoodsForm textarea').removeAttr('disabled');
+    		$('.submitBtnArea .loading').hide();
+		};
+		
+		$(document).ready(function(){
+			var ttCheck = $('#addGoodsForm input[tip], #addGoodsForm input[reg], #addGoodsForm textarea[reg]').tooltip();
+			$("#addGoodsForm").submit(function(){
+				if(ttCheck.check()){
+					if(ajaxUploadFile._input && ajaxUploadFile._input.files.length){
+						ajaxUploadFile.submit();
+					}else{
+						alert('请选择商品图片');
+					}
+				}
+				return false;
+			}).removeAttr('onsubmit');
+			
+			
+			ajaxUploadFile = new AjaxUpload($("#image-uploader"), {
+		        action: '/admin/goods_add/',
+		        name: 'goodsImage',
+		       	autoSubmit: false,
+				responseType: 'json',
+		       	onChange: function(file, extension){
+		       		$("#text_upload_file").html(file);
+		       	},
+		        onSubmit: function(file, ext){
+					console.log(file);
+					console.log(ext)
+		        	disabledUploadForm();
+					var data = {};
+					$('#addGoodsForm input, #addGoodsForm textarea').each(function(){
+						var _t = $(this);
+						data[_t.attr('name')] = _t.val();
+					});
+					if(!$("#recommend").attr('checked')){
+						delete data.recommend;
+					}
+		        	this.setData(data);
+		        },
+		        onComplete: function(file, response){
+		            enabledUploadForm();
+					$("#text_upload_file").html('');
+					if(response.success){
+						$('#addGoodsForm')[0].reset();
+						$("#showMsg").show().html('录入成功，你可以继续录入，或者<a href="/goods/show/'+response.goods._id+'" target="_blank">查看刚才录入的商品</a>');
+					}else{
+						$("#showMsg").html('').hide();
+						alert('录入失败：' + response.error);
+					}
+		        }
+		    });
+			
+			
+			/*
+			window.uploader = new qq.FileUploader({
+			    // pass the dom node (ex. $(selector)[0] for jQuery users)
+			    element: document.getElementById('image-uploader'),
+			    // path to server-side upload script
+			    action: '/admin/goods_image_upload',
+				allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+				sizeLimit: 10*1024*1024,
+				multiple: false,
+				onSubmit: function(id, fileName){
+					//return false;
+				}
+			});
+			*/
+		});
+	</script>
+	
+</div>
+<div class="sidebar">
+	
+</div>
+
+{# ../admin_footer.html #}

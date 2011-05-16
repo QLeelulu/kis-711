@@ -1,0 +1,56 @@
+{# ../admin_header.html #}
+
+	<h3 class="title">管理员管理</h3>
+	<div>
+	<div>
+		<label for="addAdminName">用户名(拼音):</label>
+		<input type="text" id="addAdminName" />
+		<button id="btnAddAdmin" class="minibutton green">添加管理员</button>
+		<br/>(要添加的用户必须登录过该系统)
+	</div>
+	<?js if(it.vd.users && it.vd.users.length){ ?>
+	<div class="userlist">
+		<?js for(var i=0, l=it.vd.users.length; i<l; i++){
+			 var user = it.vd.users[i];
+		?>
+		<span>
+			<b>#{user.name}</b>:(<a href="javascript:" uid="#{user._id}" class="delAdmin">取消管理员</a>)
+		</span>
+		<?js } ?>
+	</div>
+	<?js } ?>
+	</div>
+
+	<script type="text/javascript">
+		$("#btnAddAdmin").click(function(){
+			var user_name = $.trim($("#addAdminName").val());
+			if(!user_name){
+				alert('请输入要添加的用户名');
+				return;
+			}
+			$.post('/admin/admin_user_add', {username:user_name}, function(r){
+				if(r.success){
+					alert('添加成功');
+					window.location.reload();
+				}else{
+					alert('添加失败：' + r.error);
+				}
+			});
+		});
+		
+		$(".userlist .delAdmin").click(function(){
+			var _t = $(this);
+			if(!confirm('你确定要取消“'+ _t.parent().find('b').html() +'”的管理员身份吗？')){
+				return;
+			}
+			$.post('/admin/admin_user_remove', {user_id: _t.attr('uid')}, function(r){
+				if(r.success){
+					_t.parent().remove();
+				}else{
+					alert('操作失败：' + r.error);
+				}
+			});
+		});
+	</script>
+
+{# ../admin_footer.html #}

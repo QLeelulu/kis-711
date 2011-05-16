@@ -1,0 +1,168 @@
+{# ../admin_header.html #}
+	
+
+<link rel="stylesheet" type="text/css" href="/static/css/form.css" media="screen" /> 
+<link rel="stylesheet" type="text/css" href="/static/css/tooltip.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="/static/fileuploader/fileuploader.css" media="screen" />
+
+<div class="main">
+	<?js if(it.vd.goods){ ?>
+	<h3 class="title">编辑商品</h3>
+	
+	<?js if(it.vd.goods.updated_historys){ ?>
+	<a href="javascript:" onclick="this.style.display='none';document.getElementById('edit_history').style.display='block'">
+		查看修改历史</a>
+	<div id="edit_history" class="edit_history" style="display:none;">
+		<ul>
+		<?js for(var i=0, l=it.vd.goods.updated_historys.length; i<l; i++){ 
+			 var history = it.vd.goods.updated_historys[i];
+		?>
+			<li> #{history.type} by #{history.user_name} at #{history.process_at.format('yyyy-MM-dd hh:mm:ss')}</li>
+		<?js } ?>
+		</ul>
+	</div>
+	<?js } ?>
+	
+	<form id="addGoodsForm" method="post" class="simple_form">
+		<input type="hidden" id="goods_id" name="goods_id" value="#{it.vd.goods._id}" />
+		<ul>
+			<li>
+				<label for="title">商品名称(标题):</label>
+				<input type="text" name="title" value="#{it.vd.goods.title}" reg="^.{2,100}$" tip="商品的名称、标题" style="width:600px;" />
+			</li>
+			<li>
+				<label for="value">售价:</label>
+				<input type="text" name="value" class="inp" value="#{it.vd.goods.value}" reg="^[0-9]+(\.[0-9]*)?$" tip="商品的销售价格">
+			</li>
+			<!-- 
+			<li>
+				<label for="price">进货价:</label>
+				<input type="text" name="price" class="inp" value="#{it.vd.goods.price}" reg="^[0-9]+(\.[0-9]*)?$" tip="商品的实际进货价">
+			</li>
+			<li>
+				<label for="stocks">库存:</label>
+				<input type="text" name="stocks" class="inp" value="#{it.vd.goods.stocks}" reg="^\d+$" tip="商品的剩余的库存数量" />
+				</!-- 保存修改前的库存数，用于对比，防止不一致 --/>
+				<input type="hidden" name="last_stocks" value="#{it.vd.goods.stocks}" />
+			</li>
+			--> 
+			<li>
+				<label for="recommend" style="display:inline;">新品推荐:</label>
+				<input type="checkbox" value="1" name="recommend" id="recommend" <?js if(it.vd.goods.recommend){ ?> checked="true" <?js } ?>/>
+			</li>
+			<li>
+				<label for="des">商品的介绍:</label>
+				<textarea name="des" reg="^[.\w\s\S]{0,500}$" tip="商品的一些说明、介绍" style="width:600px; height:100px;">#{it.vd.goods.des||''}</textarea>
+			</li>
+			<li>
+				<label for="image" style="display:inline;">商品图片:</label>
+				<input type="button" id="image-uploader" class="minibutton" value="选择图片" />
+				<span type="text" id="text_upload_file" disabled="true" ></span>
+				<div><img id="img_preview" style="width:200px; height:200px;" src="/static/images/goods/s/#{it.vd.goods.image_name}" /></div>
+			</li>
+			<li id="showMsg" class="msgInfo"></li>
+			<li><br/><button type="submit" id="btnAdd" class="minibutton blue"> 更 新 </button></li>
+		<ul>
+	
+	</form>
+	
+	<script type="text/javascript" src="/static/js/tooltip.js"></script>
+	<script type="text/javascript" src="/static/fileuploader/ajaxupload.js"></script>
+	<script type="text/javascript">
+		function disabledUploadForm(){
+			$('#addGoodsForm input, #addGoodsForm textarea').attr('disabled', true);
+    		$('.submitBtnArea .loading').show();
+		};
+		
+		function enabledUploadForm(){
+			$('#addGoodsForm input, #addGoodsForm textarea').removeAttr('disabled');
+    		$('.submitBtnArea .loading').hide();
+		};
+		
+		function onSubmit(){
+			disabledUploadForm();
+			var data = {};
+			$('#addGoodsForm input, #addGoodsForm textarea').each(function(){
+				var _t = $(this);
+				data[_t.attr('name')] = _t.val();
+			});
+			if(!$("#recommend").attr('checked')){
+				delete data.recommend;
+			}
+			return data;
+		};
+		
+		function onComplete(r){
+			enabledUploadForm();
+			$("#text_upload_file").html('');
+			if(r.success){
+				if(r.goods.image_name){
+					$("#img_preview").attr('src', '/static/images/goods/s/'+r.goods.image_name);
+				}
+				$("#showMsg").show().html('更新成功，你可以继续编辑，或者<a href="/goods/show/'+ $("#goods_id").val() +'" target="_blank">查看刚才更新的商品</a>');
+			}else{
+				$("#showMsg").html('').hide();
+				alert('更新失败：' + r.error);
+			}
+		};
+		
+		$(document).ready(function(){
+			var ttCheck = $('#addGoodsForm input[tip], #addGoodsForm input[reg], #addGoodsForm textarea[reg]').tooltip();
+			$("#addGoodsForm").submit(function(){
+				if(ttCheck.check()){
+					if(ajaxUploadFile._input && ajaxUploadFile._input.files.length){
+						ajaxUploadFile.submit();
+					}else{
+						var data = onSubmit();
+						$.post('/admin/goods_edit', data, function(r){
+							onComplete(r);
+						});
+					}
+				}
+				return false;
+			}).removeAttr('onsubmit');
+			
+			
+			ajaxUploadFile = new AjaxUpload($("#image-uploader"), {
+		        action: '/admin/goods_edit/',
+		        name: 'goodsImage',
+		       	autoSubmit: false,
+				responseType: 'json',
+		       	onChange: function(file, extension){
+		       		$("#text_upload_file").html(file);
+		       	},
+		        onSubmit: function(file, ext){
+					var data = onSubmit();
+		        	this.setData(data);
+		        },
+		        onComplete: function(file, response){
+		            onComplete(response);
+		        }
+		    });
+			
+			
+			/*
+			window.uploader = new qq.FileUploader({
+			    // pass the dom node (ex. $(selector)[0] for jQuery users)
+			    element: document.getElementById('image-uploader'),
+			    // path to server-side upload script
+			    action: '/admin/goods_image_upload',
+				allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+				sizeLimit: 10*1024*1024,
+				multiple: false,
+				onSubmit: function(id, fileName){
+					//return false;
+				}
+			});
+			*/
+		});
+	</script>
+	<?js }else{ ?>
+		<h3 class="title">你要编辑的商品不存在</h3>
+	<?js } ?>
+</div>
+<div class="sidebar">
+	
+</div>
+
+{# ../admin_footer.html #}

@@ -1,0 +1,40 @@
+{# ../admin_header.html #}
+
+<script type="text/javascript" src="/static/js/My97DatePicker/WdatePicker.js"></script>
+<h3 class="title">#{it.vd.user.name} 的详细信息</h3>
+<div>
+	<form>
+		开始日期:<input type="text" id="dateStart" name="ds" value="#{it.vd.dateStart || ''}" onFocus="WdatePicker({readOnly:true,minDate:'2011-05-1',maxDate:'%y-%M-%d'})" />
+		<img onclick="WdatePicker({el:'dateStart',minDate:'2011-05-1',maxDate:'%y-%M-%d'})" src="/static/js/My97DatePicker/skin/datePicker.gif" width="16" height="22" align="absmiddle">
+		结束日期:<input type="text" id="dateEnd" name="de" value="#{it.vd.dateEnd || ''}" onFocus="WdatePicker({readOnly:true,minDate:'#F{$dp.$D(\'dateStart\')}',maxDate:'%y-%M-%d'})" />
+		<img onclick="WdatePicker({el:'dateEnd',minDate:'#F{$dp.$D(\'dateStart\')}',maxDate:'%y-%M-%d'})" src="/static/js/My97DatePicker/skin/datePicker.gif" width="16" height="22" align="absmiddle">
+		<button class="minibutton" type="submit">确 定</button>
+	</form>
+	<h4>用户信息</h4>
+	<div class="detail">
+		订单数：#{it.vd.user.total_bill} &nbsp;
+		商品数：#{it.vd.user.total_quantity} &nbsp;
+		总花费：¥#{it.vd.user.total_value.toFixed(2)} &nbsp;
+		总补贴：¥#{(it.vd.user.total_price - it.vd.user.total_value).toFixed(2)} &nbsp;
+		结算方式：<?js if(it.vd.user.payment_type=='cash'){ ?>现金<?js }else if(it.vd.user.payment_type=='wage'){ ?>工资扣<?js }else{ ?>默认-工资扣<?js } ?>
+	</div>
+	<br/>
+	<h4>订单列表</h4>
+	<?js if(it.vd.bills && it.vd.bills.length){ ?>
+	<ul class="billlist">
+		<?js for(var i=0, l=it.vd.bills.length; i<l; i++){
+			 var bill = it.vd.bills[i];
+		?>
+		<li class="<?js if(i%2===0){ ?>even<?js } ?>">
+			<p>#{bill.created_at.format('yyyy-MM-dd hh:mm:ss')}: 买了 #{bill.quantity} 件 “#{bill.goods_title}”</p>
+			<p>进货价：￥#{bill.price}, 售价：￥#{bill.value}, 公司补贴：￥#{bill.price - bill.value}</p>
+		</li>
+		<?js } ?>
+	</ul>
+	<?js }else{ ?>
+		该用户暂时没有订单信息
+	<?js } ?>
+</div>
+
+
+{# ../admin_footer.html #}

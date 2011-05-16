@@ -1,0 +1,13 @@
+.simple_form li{
+	margin: 5px 0 10px 0;
+}
+
+.simple_form label{
+	font-size: 13px;
+	color: #333;
+	display: block;
+}
+
+.simple_form .inp{
+	width: 250px;
+}
