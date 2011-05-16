@@ -5,6 +5,7 @@
  
 var goodsModel = require('../models/goods'),
     billModel = require('../models/bills'),
+    commentModel = require('../models/comments'),
     userModel = require('../models/user'),
     userAuthFilter = require('../filters/auth').userAuthFilter;
 
@@ -93,4 +94,50 @@ exports.buy = function(fnNext){
     });
 };
 exports.buy.filters = [userAuthFilter];
+
+/*********
+ * 评论列表
+ */
+exports.comments = function(fnNext){
+    var _t = this, goods_id = _t.req.get.goods_id || _t.req.post.goods_id;
+    if(goods_id){
+        commentModel.getComments(goods_id, function(err,comments){
+            fnNext( _t.ar.view({comments: comments}, 'comment/comment_list.html') );
+        });
+    }else{
+        fnNext( _t.ar.raw('参数错误') );
+    }
+};
+
+/*********
+ * 添加评论
+ */
+exports.comment_post = function(fnNext){
+    var _t = this,
+        r = {success: false},
+        goods_id = _t.req.post.goods_id,
+        content = _t.req.post.content;
+    if(goods_id && content && content.trim()){
+        var comment = {
+            user_name: _t.req.user.name,
+            goods_id: commentModel.id(goods_id),
+            content: content.trim()
+        };
+        comment.created_at = comment.updated_at = new Date();
+        commentModel.insert(comment, 
+            function(err, _comment){
+                if(err || !_comment || !_comment.length){
+                    r.error = '更新数据库失败';
+                }else{
+                    r.success = true;
+                }
+                fnNext( _t.ar.json(r) );
+            }
+        );
+    }else{
+        r.error = '参数错误';
+        fnNext( _t.ar.json(r) );
+    }
+};
+exports.comment_post.filters = [userAuthFilter];
 

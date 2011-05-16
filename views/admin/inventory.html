@@ -43,7 +43,7 @@
 			<td><?js if(inv.type === 0){ ?>损耗<?js }else if(inv.type === 1){ ?>进货<?js }else{ ?>未知<?js } ?></td>
 			<td>#{inv.quantity}</td>
 			<td>￥#{inv.price}</td>
-			<td>￥#{inv.price * inv.quantity}</td>
+			<td>￥#{(inv.price * inv.quantity).toFixed(2)}</td>
 			<td>#{inv.user_name}</td>
 			<td>#{inv.goods_title}</td>
 		</tr>
@@ -51,8 +51,8 @@
 		<tr>
 			<th>合计</th>
 			<th class="specalt" colspan="15">
-				进货量：#{total.cStocks}， 进货金额：￥#{total.mStocks} <br/>
-				损耗量：#{total.cLoss}， 损耗金额：￥#{total.mLoss} <br/>
+				进货量：#{total.cStocks}， 进货金额：￥#{total.mStocks.toFixed(2)} <br/>
+				损耗量：#{total.cLoss}， 损耗金额：￥#{total.mLoss.toFixed(2)} <br/>
 				损耗率：#{(total.cLoss/total.cStocks*100).toFixed(2) + '%'}
 			</th>
 		</tr>

@@ -90,7 +90,7 @@
 				msg = '你确定“'+ f.closest('li').find('.goods_title').html() +'”出现损耗吗？\r\n'
 					 +'进货价：￥' + data.price
 					 +'\r\n损耗数量：' + data.quantity
-					 +'\r\n损耗金额：￥' + (data.price * data.quantity);
+					 +'\r\n损耗金额：￥' + (data.price * data.quantity).toFixed(2);
 			}else if(type === 1){ //进货
 				f = $("#purchase");
 				data = {
@@ -102,7 +102,7 @@
 				msg = '你确定“'+ f.closest('li').find('.goods_title').html() +'”进货吗？\r\n'
 					 +'进货价：￥' + data.price
 					 +'\r\n进货数量：' + data.quantity
-					 +'\r\n进货金额：￥' + (data.price * data.quantity);
+					 +'\r\n进货金额：￥' + (data.price * data.quantity).toFixed(2);
 			}else{
 				return;
 			}

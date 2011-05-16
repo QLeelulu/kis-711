@@ -12,6 +12,7 @@ body { font:12px Arial, Tahoma, Helvetica, sans-serif; }
 a:link, a:visited { text-decoration:none; ; color: #006BAD; -moz-border-radius: 1px; -webkit-border-radius: 1px;}
 a:hover { text-decoration:underline; }
 a:active { }
+h3.title{font-size:20px; font-weight:bold; border-bottom:dashed #ccc 1px;}
 .header { background:url(../images/topbg.jpg) repeat-x; height:80px; text-align:center; }
 .pagebody { width:990px; margin:0 auto; clear:both; position:relative; }
 .function { border-bottom:1px solid #ccc; }
@@ -28,11 +29,23 @@ a.back{ background:#FF9900; width:80px; font-size:14px; color:#fff; text-align:c
 .list li { float:left; width:215px; margin:6px 5px; }
 .list li img { display:block; width:170px; height:170px; border:1px solid #eee; overflow:hidden; padding:1px; }
 .list li p { color:#666; }
-.list li p.title { line-height:28px; color:#666; }
+.list li p.title { line-height:28px; color:#666;  }
+.list li p.title a{ display:inline-block; overflow:hidden; white-space:nowrap; width:170px;}
 .list li p .price { font-size:14px; font-weight:bold; color:#FF0000; }
 .left { float:left; }
 .right { float:right; margin-right:40px;_margin-right:20px; position:relative; top:-5px; }
 .buybtn { background:url(../images/btn.jpg) no-repeat; text-indent:-8888px; width:50px; height:23px; display:block; float:left; overflow:hidden; }
+
+#footer {
+	clear: both;
+	margin-top: 30px;
+	padding-top: 10px;
+	text-align: center;
+	border-top: 1px solid #ccc;
+	width:990px;
+	margin:30px auto 0;
+}
+#footer img{vertical-align:middle;}
 
 .bigpic { float:left; width:400px; padding:20px 0; text-align:center }
 .bigpic img { width:280px; height:280px; border:1px solid #eee; padding:2px; }
@@ -51,6 +64,13 @@ a.back{ background:#FF9900; width:80px; font-size:14px; color:#fff; text-align:c
 .buyStips{ width:450px; margin:50px auto;}
 .txt{  text-align:center; padding:30px 0; clear:both; display:block; background:#DAFECF; width:400px; height:160px; border:1px solid #BDE492;border-radius:20px;}
 .txt p em{ color:#FF6600;}
+
+.commentList{padding:10px 0;}
+.commentList li{margin:18px;}
+.commentList .info{background: #F5F5F5;border-top: 1px solid #369;padding: 3px 10px;margin: 5px 0px 6px;}
+.commentList .cont{padding:0 10px 0 10px;}
+.commentForm{margin-left:18px;}
+.commentForm textarea{width:500px; height:100px; display:block;}
 
 #btnBuy{padding:3px 20px; font-size:16px;}
 /* mini button */

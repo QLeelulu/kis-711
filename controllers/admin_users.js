@@ -144,7 +144,7 @@ function _getUsersWithBillInfo(param, fn){
     if(created_at){
         cond.query = {created_at: created_at};
     }
-    console.dir(cond)
+    
     billModel.mapReduce(m, r, 
         cond,
         function(err, col){
@@ -196,9 +196,11 @@ exports.user_detail = function(fnNext){
         user.total_quantity = 0;
         user.total_bill = 0;
         
-        var cond = {'created_at': kutil.getDateRangeCond(ds, de)};
-        console.dir(cond)
-    
+        var cond = {}, created_at = kutil.getDateRangeCond(ds, de);
+        if(created_at){
+            cond.created_at = created_at;
+        }
+
         billModel.getUserBills(user.name, cond, function(err, bills){
             if(!err && bills && bills.length){
                 var bill = null;

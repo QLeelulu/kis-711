@@ -31,7 +31,7 @@ exports.goods_add_post = function(fnNext){
         var goods = new goodsForm(_t.req.post);
         if(!goods.isValid()){
             r.error = goods.validErrors;
-            return fnNext( this.ar.json(r) );
+            return fnNext( this.ar.raw(JSON.stringify(r), 'text/html;charset=UTF-8') );
         }
         var is = fs.createReadStream(upImg.path),
             sPath = upImg.path.split('/'),
@@ -73,7 +73,7 @@ exports.goods_add_post = function(fnNext){
                           width:   200,
                           height:  200
                         }, function(){
-                            fnNext( _t.ar.json(r) );
+                            fnNext( _t.ar.raw(JSON.stringify(r), 'text/html;charset=UTF-8') );
                         });
                     }
                 );
@@ -83,7 +83,7 @@ exports.goods_add_post = function(fnNext){
         
     }else{
         r.error = '选择要上传的图片';
-        fnNext( this.ar.json(r) );
+        fnNext( this.ar.raw(JSON.stringify(r), 'text/html;charset=UTF-8') );
     }
 };
 
@@ -102,13 +102,13 @@ exports.goods_edit_post = function(fnNext){
         r = {'success':false}, upImg = this.req.files && this.req.files.goodsImage;
     if(!goods_id){
         r.error = '未指定要编辑的商品id';
-        return fnNext( this.ar.json(r) );
+        return fnNext( this.ar.raw(JSON.stringify(r), 'text/html;charset=UTF-8') );
     }
     
     var goods = new goodsForm(_t.req.post);
     if(!goods.isValid()){
         r.error = goods.validErrors;
-        return fnNext( this.ar.json(r) );
+        return fnNext( this.ar.raw(JSON.stringify(r), 'text/html;charset=UTF-8') );
     }
     
     function updateGoodsInfo(toImgName){
@@ -133,7 +133,7 @@ exports.goods_edit_post = function(fnNext){
                     r.success = true;
                     r.goods = goods;
                 }
-                fnNext( _t.ar.json(r) );
+                fnNext( _t.ar.raw(JSON.stringify(r), 'text/html;charset=UTF-8') );
             }
         );
     }

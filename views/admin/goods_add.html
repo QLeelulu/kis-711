@@ -7,7 +7,7 @@
 
 <div class="main">
 	<h3 class="title">添加商品</h3>
-	<form id="addGoodsForm" method="post" class="simple_form">
+	<form id="addGoodsForm" method="post" class="simple_form" onsubmit="return false;">
 		<ul>
 			<li>
 				<label for="title">商品名称(标题):</label>
@@ -63,14 +63,14 @@
 			var ttCheck = $('#addGoodsForm input[tip], #addGoodsForm input[reg], #addGoodsForm textarea[reg]').tooltip();
 			$("#addGoodsForm").submit(function(){
 				if(ttCheck.check()){
-					if(ajaxUploadFile._input && ajaxUploadFile._input.files.length){
+					if(ajaxUploadFile._input && ajaxUploadFile._input.value){
 						ajaxUploadFile.submit();
 					}else{
 						alert('请选择商品图片');
 					}
 				}
 				return false;
-			}).removeAttr('onsubmit');
+			});
 			
 			
 			ajaxUploadFile = new AjaxUpload($("#image-uploader"), {
@@ -82,8 +82,6 @@
 		       		$("#text_upload_file").html(file);
 		       	},
 		        onSubmit: function(file, ext){
-					console.log(file);
-					console.log(ext)
 		        	disabledUploadForm();
 					var data = {};
 					$('#addGoodsForm input, #addGoodsForm textarea').each(function(){
@@ -103,7 +101,7 @@
 						$("#showMsg").show().html('录入成功，你可以继续录入，或者<a href="/goods/show/'+response.goods._id+'" target="_blank">查看刚才录入的商品</a>');
 					}else{
 						$("#showMsg").html('').hide();
-						alert('录入失败：' + response.error);
+						alert('录入失败：' + getAjaxError(response));
 					}
 		        }
 		    });

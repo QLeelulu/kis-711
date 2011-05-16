@@ -8,10 +8,10 @@
 			 var goods = it.vd.re_goods[i];
 		?>
 		<li>
-			<a href="/goods/show/#{goods._id}">
+			<a href="/goods/show/#{goods._id}" title="${goods.title}">
 				<img src="/static/images/goods/s/#{goods.image_name}" width="168" height="168" />
 			</a>
-			<p class="title"><a href="/goods/show/#{goods._id}">${goods.title}</a></p>
+			<p class="title"><a href="/goods/show/#{goods._id}" title="${goods.title}">${goods.title}</a></p>
             <p class="left"><em class="price">￥#{goods.value}</em>&nbsp;&nbsp;&nbsp;剩余：<em class="num">#{goods.stocks||0}</em></p>
             <p class="right"><a href="/goods/show/#{goods._id}" class="buybtn">购买</a></p>
 		</li>

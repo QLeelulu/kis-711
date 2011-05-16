@@ -1,0 +1,17 @@
+
+<?js if(it.vd.comments && it.vd.comments.length){ ?>
+<ul>
+	<?js for(var i=0, l=it.vd.comments.length; i<l; i++){ 
+		 	var comment = it.vd.comments[i];
+	?>
+	<li>
+		<div class="info">##{i+1}楼: <a href="###">${comment.user_name}</a> 
+			发表于 #{comment.created_at.format('yyyy-MM-dd hh:mm:ss')}
+		</div>
+		<div class="cont">#{comment.content}</div>
+	</li>
+	<?js } ?>
+</ul>	
+<?js }else{ ?>
+	暂无评论
+<?js } ?>

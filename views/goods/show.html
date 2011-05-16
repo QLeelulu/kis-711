@@ -9,7 +9,7 @@
                 <p class="title">${it.vd.goods.title}</p>
                 <p>售　　价：<span id="price">￥#{it.vd.goods.value}</span></p>
                 <p>进货价格：<span id="o_price">￥#{it.vd.goods.price}</span>　　
-				   公司补贴：<span>￥#{it.vd.goods.price-it.vd.goods.value}</span>
+				   公司补贴：<span>￥#{(it.vd.goods.price-it.vd.goods.value).toFixed(2)}</span>
 				</p>
                 <p>已　　售：<span id="">#{it.vd.goods.sales||0}</span>　　
 				   库　　存：<span>#{it.vd.goods.stocks}</span>
@@ -20,6 +20,9 @@
                 <p style="margin-top:10px;">
                     <input id="btnBuy" type="button" class="minibutton green" value="购 买" />
                     &nbsp;</p>
+				<?js if(it.vd.goods.des){ ?>
+				<p><br/>介绍: ${it.vd.goods.des}</p>
+				<?js } ?>
 				<?js if(it.vd.goods.buyers){ ?>
 				<p> <br/>
 					他们购买了:
@@ -30,7 +33,17 @@
 				<?js } ?>
             </div>
         </div>
+		
     </div>
+	<div style="clear:both;"></div>
+	<h3 class="title">评论</h3>
+	<div class="commentList" id="commentList"></div>
+	<?js if(it.req.user){ ?>
+	<div class="commentForm">
+		<textarea id="textComment"></textarea>
+		<button class="minibutton" id="btnAddComment">添加评论</button>
+	</div>
+	<?js } ?>
 	
 <script type="text/javascript">
 	var goodsId = '#{it.vd.goods._id}';
@@ -63,7 +76,45 @@
 				_btn.removeAttr('disabled');
 			});
 		});
+		
+		getComments();
+		
+		<?js if(it.req.user){ ?>
+			$("#btnAddComment").click(function(){
+				var _btn = $(this), content = $.trim($("#textComment").val());
+				if(!content){
+					alert('请输入评论内容');
+					return;
+				}
+				_btn.attr('disabled', true);
+				$.ajax({
+					url:'/goods/comment',
+					data: {goods_id: goodsId, content:content},
+					type: 'post',
+					success: function(r){
+						if(r && r.success){
+							alert('评论成功');
+							$("#textComment").val('')
+						}else{
+							alert('评论出错：' + r.error);
+						}
+					},
+					error: function(r){
+						alert("评论出错");
+					},
+					complete: function(){
+						_btn.removeAttr('disabled');
+					}
+				});
+			});
+		<?js } ?>
 	});
+	
+	function getComments(){
+		$.get('/goods/comments', {'goods_id':goodsId}, function(r){
+			$("#commentList").html(r);
+		});
+	};
 	
 </script>
 	

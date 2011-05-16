@@ -8,15 +8,17 @@
 		<img onclick="WdatePicker({el:'dateStart',minDate:'2011-05-1',maxDate:'%y-%M-%d'})" src="/static/js/My97DatePicker/skin/datePicker.gif" width="16" height="22" align="absmiddle">
 		结束日期:<input type="text" id="dateEnd" name="de" value="#{it.vd.dateEnd || ''}" onFocus="WdatePicker({readOnly:true,minDate:'#F{$dp.$D(\'dateStart\')}',maxDate:'%y-%M-%d'})" />
 		<img onclick="WdatePicker({el:'dateEnd',minDate:'#F{$dp.$D(\'dateStart\')}',maxDate:'%y-%M-%d'})" src="/static/js/My97DatePicker/skin/datePicker.gif" width="16" height="22" align="absmiddle">
-		<button class="minibutton" type="submit">确 定</button>
+		<button class="minibutton" type="submit">确 定</button> &nbsp; 
+		<label for="onlyHasBills">仅显示有订单的用户</label><input type="checkbox" id="onlyHasBills" />
 	</form>
+	
 	<div>
 	<?js if(it.vd.users && it.vd.users.length){ ?>
 	<ul class="userlist">
 		<?js for(var i=0, l=it.vd.users.length; i<l; i++){
 			 var user = it.vd.users[i];
 		?>
-		<li class="<?js if(i%2===0){ ?>even<?js } ?>">
+		<li class="<?js if(i%2===0){ ?>even<?js } ?> <?js if(user.bills_total){ ?> hasbills <?js }else{ ?> nobills <?js } ?>">
 			<b>#{user.name}</b>
 			[结算方式：<?js if(user.payment_type=='cash'){ ?>现金<?js }else if(user.payment_type=='wage'){ ?>工资扣<?js }else{ ?>默认-工资扣<?js } ?>]
 			(<a href="/admin/user_detail/#{user._id}?ds=#{it.vd.dateStart || ''}&de=#{it.vd.dateEnd || ''}">查看详情</a>)
@@ -37,5 +39,14 @@
 	<?js } ?>
 	</div>
 
+<script type="text/javascript">
+	$("#onlyHasBills").click(function(){
+		if($(this).attr('checked')){
+			$(".userlist .nobills").hide();
+		}else{
+			$(".userlist .nobills").show();
+		}
+	});
+</script>
 
 {# ../admin_footer.html #}
