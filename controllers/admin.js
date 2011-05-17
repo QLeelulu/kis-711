@@ -19,12 +19,7 @@ exports.index = function(fnNext){
         today = new Date(year, month, day),
         yestoday = new Date(year, month, day-1);
     
-    console.log(now.toLocaleString());
-    console.log(today.toLocaleString());
-    console.log(yestoday.toLocaleString());
-    
     var combo = new Combo(function(){
-        console.log(r);
         fnNext( _t.ar.view(r) );
     });
     
@@ -66,7 +61,7 @@ exports.index = function(fnNext){
     
     // 总订单、总售出商品数
     combo.add();
-    billModel.getCount(today, now, function(err, count){
+    billModel.getCount(today, null, function(err, count){
         r.today_bills = count.value;
         combo.finishOne();
     });

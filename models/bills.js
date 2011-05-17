@@ -68,7 +68,7 @@ db.bind(collectionName, {
             return d;
         };
         
-        var cond = {scope:{dateStart:dateStart, dateEnd:dateEnd}, out: {replace: dateStart.getTime() + '_' + dateEnd.getTime() + '_bills_count'}}, created_at = null;
+        var cond = {scope:{dateStart:dateStart, dateEnd:dateEnd}, out: {replace: (dateStart && dateStart.getTime()) + '_' + (dateEnd && dateEnd.getTime()) + '_bills_count'}}, created_at = null;
         if(dateStart){
             created_at = {};
             created_at['$gte'] = dateStart;
@@ -80,16 +80,14 @@ db.bind(collectionName, {
         if(created_at){
             cond.query = {created_at: created_at};
         }
-        console.log(cond)
+
         this.mapReduce(m, r, 
             cond,
             function(err, col){
-                console.log(err)
                 if(err){
                     fn && fn(err, null);
                 }else{
                     col.find().toArray(function(err, results){
-                        console.log(results)
                         fn && fn(err, results && results.length && results[0]);
                     });
                 }
