@@ -29,6 +29,18 @@ db.bind(collectionName, {
             fn && fn(err, comments);
         });
     }
+    /*****
+     * 这个可以提到基类中去的. =。=！懒啊
+     */
+  , getByPage: function(page, pagesize, fn){
+        var pagesize = Number(pagesize),
+            page = Number(page);
+        page = (isNaN(page) || page < 1) ? 1 : page;
+        pagesize = (isNaN(pagesize) || pagesize < 5) ? 5 : pagesize;
+        this.find().skip((page-1)*pagesize).limit(pagesize).sort('created_at', -1).toArray(function(err, comments){
+            fn && fn(err, comments);
+        });
+    }
 });
 
 module.exports = Comment;

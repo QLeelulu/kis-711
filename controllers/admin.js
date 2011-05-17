@@ -8,6 +8,7 @@ var billModel = require('../models/bills')
     goodsModel = require('../models/goods'),
     adminAuthFilter = require('../filters/auth').adminAuthFilter;
 
+// Controller的验证filter
 exports.filters = [adminAuthFilter]
 
 exports.index = function(fnNext){
@@ -78,6 +79,8 @@ exports.index = function(fnNext){
 _addActions(require('./admin_goods'));
 _addActions(require('./admin_users'));
 _addActions(require('./admin_inventory'));
+_addActions(require('./admin_bills'));
+_addActions(require('./admin_comments'));
 
 function _addActions(actions){
     for(var k in actions){

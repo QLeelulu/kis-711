@@ -301,14 +301,16 @@ em {
 	padding: 20px 10px;
 	font-size:13px;
 }
-.userlist li, .billlist li, .goodslist li{
+.userlist li, .billlist li, .goodslist li, .commentlist li{
 	border-bottom:dashed 1px #ccc;
 	padding:10px 0;
 }
 .userlist li b{ color:green; font-size:14px; }
 .userlist li .detail{ padding-left: 20px; }
 
-.goodslist li.even, .userlist li.even, .billlist li.even { background:#F9F9F9; }
+.goodslist li.even, .userlist li.even, .billlist li.even, .commentlist li.even { background:#F9F9F9; }
+
+.allbillslist li span, .commentlist li span{padding:0 5px; color:#f60;}
 
 /* table */
 caption { 

@@ -1,0 +1,22 @@
+{# ../admin_header.html #}
+
+
+	<h4>用户评论列表</h4>
+	<div>
+	<?js if(it.vd.comments && it.vd.comments.length){ ?>
+	<ul class="commentlist">
+		<?js for(var i=0, l=it.vd.comments.length; i<l; i++){
+			 var comment = it.vd.comments[i];
+		?>
+		<li gid="#{comment._id}" class="<?js if(i%2===0){ ?>even<?js } ?>">
+			<span>#{comment.user_name}</span> 发表于 
+			<span><a target="_blank" href="/goods/show/#{comment.goods_id}">#{comment.created_at.format('yyyy-MM-dd hh:mm:ss')}</a></span>：<br/>
+			<div>#{comment.content}</div>
+			
+		</li>
+		<?js } ?>
+	</ul>
+	<?js } ?>
+	</div>
+	
+{# ../admin_footer.html #}

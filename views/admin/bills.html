@@ -1,0 +1,23 @@
+{# ../admin_header.html #}
+
+
+	<h4>用户订单列表</h4>
+	<div>
+	<?js if(it.vd.bills && it.vd.bills.length){ ?>
+	<ul class="allbillslist billlist">
+		<?js for(var i=0, l=it.vd.bills.length; i<l; i++){
+			 var bill = it.vd.bills[i];
+		?>
+		<li gid="#{bill._id}" class="<?js if(i%2===0){ ?>even<?js } ?>">
+			<span>#{bill.user_name}</span> 
+			在<span class="buy_time">#{bill.created_at.format('yyyy-MM-dd hh:mm:ss')}</span>
+				花了<span>￥#{bill.value * bill.quantity}</span>
+				购买了<span class="num">#{bill.quantity}</span>件<span class="good_name">#{bill.goods_title}</span>
+			
+		</li>
+		<?js } ?>
+	</ul>
+	<?js } ?>
+	</div>
+	
+{# ../admin_footer.html #}
