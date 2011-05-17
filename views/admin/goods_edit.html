@@ -110,7 +110,7 @@
 			var ttCheck = $('#addGoodsForm input[tip], #addGoodsForm input[reg], #addGoodsForm textarea[reg]').tooltip();
 			$("#addGoodsForm").submit(function(){
 				if(ttCheck.check()){
-					if(ajaxUploadFile._input && ajaxUploadFile._input.files.length){
+					if(ajaxUploadFile._input && ajaxUploadFile._input.value){
 						ajaxUploadFile.submit();
 					}else{
 						var data = onSubmit();
