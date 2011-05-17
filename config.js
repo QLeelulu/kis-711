@@ -21,6 +21,8 @@ exports.CAS_SERVER_URL = '/user/ksso_login';
 exports.MONGO_HOST = 'localhost';
 exports.MONGO_PORT = 27017;
 exports.MONGO_DB_NAME = 'kis-711';
+exports.MONGO_DB_USER = 'root';
+exports.MONGO_DB_PWD = '123456';
 
 exports.middlewares = [
     'cookie',
