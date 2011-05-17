@@ -19,6 +19,7 @@
 
 var db = require('./baseModel').db,
     userModel = require('./user'),
+    kutil = require('../util/kutil'),
     collectionName = 'bills';
 
 var Bill = db.collection(collectionName);
@@ -42,7 +43,59 @@ db.bind(collectionName, {
         this.find(cond).sort('created_at', -1).toArray(function(err, bills){
             fn && fn(err, bills);
         });
-  }
+    }
+    /*****
+     * 获取订单统计数据
+     * @param dateStart {Date}
+     * @param dateEnd {Date}
+     */
+  , getCount: function(dateStart, dateEnd, fn){
+        var m = function(){
+            var r = {quantity: this.quantity, bills: 1};
+                r.price = this.price * this.quantity;
+                r.value = this.value * this.quantity;
+            emit({ds:dateStart, de:dateEnd}, r);
+        };
+        var r = function(k, vals){
+            var val = null, d = {price:0, value:0, quantity:0, bills:0};
+            for(var i = vals.length-1; i >=0; i--){
+                val = vals[i];
+                d.price += val.price;
+                d.value += val.value;
+                d.quantity += val.quantity;
+                d.bills += val.bills;
+            }
+            return d;
+        };
+        
+        var cond = {scope:{dateStart:dateStart, dateEnd:dateEnd}, out: {replace: dateStart.getTime() + '_' + dateEnd.getTime() + '_bills_count'}}, created_at = null;
+        if(dateStart){
+            created_at = {};
+            created_at['$gte'] = dateStart;
+        }
+        if(dateEnd){
+            created_at = created_at || {};
+            created_at['$lte'] = dateEnd;
+        }
+        if(created_at){
+            cond.query = {created_at: created_at};
+        }
+        console.log(cond)
+        this.mapReduce(m, r, 
+            cond,
+            function(err, col){
+                console.log(err)
+                if(err){
+                    fn && fn(err, null);
+                }else{
+                    col.find().toArray(function(err, results){
+                        console.log(results)
+                        fn && fn(err, results && results.length && results[0]);
+                    });
+                }
+            }
+        );
+    }
 });
 
 module.exports = Bill;

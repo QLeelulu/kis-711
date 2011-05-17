@@ -1,11 +1,65 @@
 {# ../admin_header.html #}
 	
-<div class="main">
+
 	<a href="/admin/goods_add" class="minibutton blue">添加商品</a>
+	<h4>统计概况</h4>
+	<table>
+		<tr>
+			<th>商品数</th>
+			<th>库存数</th>
+			<th>零库存商品</th>
+			<th>用户数</th>
+		</tr>
+		<tr>
+			<td>#{it.vd.goods_count}</td>
+			<td>#{it.vd.goods_stocks}</td>
+			<td>#{it.vd.goods_no_stocks}</td>
+			<td>#{it.vd.users_count}</td>
+		</tr>
+	</table>
+
+	<h4>今天销售情况</h4>
+	<?js if(it.vd.today_bills){ ?>
+		<table>
+			<tr>
+				<th>订单数</th>
+				<th>售出商品数</th>
+				<th>总价值</th>
+				<th>总收入</th>
+				<th>总补贴</th>
+			</tr>
+			<tr>
+				<td>#{it.vd.today_bills.bills}</td>
+				<td>#{it.vd.today_bills.quantity}</td>
+				<td>#{it.vd.today_bills.price}</td>
+				<td>#{it.vd.today_bills.value}</td>
+				<td>#{(it.vd.today_bills.price - it.vd.today_bills.value).toFixed(2)}</td>
+			</tr>
+		</table>
+	<?js }else{ ?>
+		<div>今日没有订单</div>
+	<?js } ?>
 	
-</div>
-<div class="sidebar">
-	
-</div>
+	<h4>昨天销售情况</h4>
+	<?js if(it.vd.yestoday_bills){ ?>
+		<table>
+			<tr>
+				<th>订单数</th>
+				<th>售出商品数</th>
+				<th>总价值</th>
+				<th>总收入</th>
+				<th>总补贴</th>
+			</tr>
+			<tr>
+				<td>#{it.vd.yestoday_bills.bills}</td>
+				<td>#{it.vd.yestoday_bills.quantity}</td>
+				<td>#{it.vd.yestoday_bills.price}</td>
+				<td>#{it.vd.yestoday_bills.value}</td>
+				<td>#{(it.vd.yestoday_bills.price - it.vd.yestoday_bills.value).toFixed(2)}</td>
+			</tr>
+		</table>
+	<?js }else{ ?>
+		<div>昨天没有订单</div>
+	<?js } ?>
 
 {# ../admin_footer.html #}

@@ -5,6 +5,8 @@
 
 /********
  * 获取时间范围的Mongodb查询筛选条件
+ * @param dateStart {String} date format string
+ * @param dateEnd {String} date format string
  */
 exports.getDateRangeCond = function(dateStart, dateEnd){
     var where = {};
