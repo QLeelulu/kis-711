@@ -35,7 +35,7 @@ exports.users = function(fnNext){
     });
     
     combo.add();
-    userModel.find().sort('name', 1).toArray(function(err, users){
+    userModel.find().sort('name_lower', 1).toArray(function(err, users){
         var userNames = [], user = null;
         r.users = users;
         combo.finishOne();
