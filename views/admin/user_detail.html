@@ -27,7 +27,7 @@
 		?>
 		<li class="<?js if(i%2===0){ ?>even<?js } ?>">
 			<p>#{bill.created_at.format('yyyy-MM-dd hh:mm:ss')}: 买了 #{bill.quantity} 件 “#{bill.goods_title}”</p>
-			<p>进货价：￥#{bill.price}, 售价：￥#{bill.value}, 公司补贴：￥#{bill.price - bill.value}</p>
+			<p>进货价：￥#{bill.price}, 售价：￥#{bill.value}, 公司补贴：￥#{(bill.price - bill.value).toFixed(2)}</p>
 		</li>
 		<?js } ?>
 	</ul>

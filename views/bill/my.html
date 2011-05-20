@@ -13,14 +13,14 @@
         </div>
         <h2>以下是您的购买记录：</h2>
 	    <?js if(it.vd.bills && it.vd.bills.length){ ?>
-		<p>您总共消费了 <span id="t_price" style="font-weight:bold;">￥ #{it.req.user.stat_total.value||0}</span></p>
+		<p>您总共消费了 <span id="t_price" style="font-weight:bold;">￥ #{(it.req.user.stat_total.value||0).toFixed(2)}</span></p>
         <ul>
         	<?js for(var i=0, l=it.vd.bills.length; i<l; i++){
 				 var bill = it.vd.bills[i];
 			?>
 			<li>
 				您在<span id="buy_time">#{bill.created_at.format('yyyy-MM-dd hh:mm:ss')}</span>
-				花了<span>￥#{bill.value * bill.quantity}</span>
+				花了<span>￥#{(bill.value * bill.quantity).toFixed(2)}</span>
 				购买了<span id="num">#{bill.quantity}</span>件<span class="good_name">#{bill.goods_title}</span>
 			</li>
 			<?js } ?>
