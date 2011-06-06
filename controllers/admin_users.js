@@ -7,7 +7,7 @@ var fs = require('fs'),
     path = require('path'),
     util = require('util'),
     kutil = require('../util/kutil'),
-    billModel = require('../models/bills')
+    billModel = require('../models/bills'),
     userModel = require('../models/user');
 
 /******

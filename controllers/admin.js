@@ -81,6 +81,7 @@ _addActions(require('./admin_users'));
 _addActions(require('./admin_inventory'));
 _addActions(require('./admin_bills'));
 _addActions(require('./admin_comments'));
+_addActions(require('./admin_settlements'));
 
 function _addActions(actions){
     for(var k in actions){

@@ -11,23 +11,44 @@
         	</select>
 			<input type="button" class="minibutton" id="btnSetPayType" value="设 置" />
         </div>
-        <h2>以下是您的购买记录：</h2>
-	    <?js if(it.vd.bills && it.vd.bills.length){ ?>
-		<p>您总共消费了 <span id="t_price" style="font-weight:bold;">￥ #{(it.req.user.stat_total.value||0).toFixed(2)}</span></p>
-        <ul>
-        	<?js for(var i=0, l=it.vd.bills.length; i<l; i++){
-				 var bill = it.vd.bills[i];
-			?>
-			<li>
-				您在<span id="buy_time">#{bill.created_at.format('yyyy-MM-dd hh:mm:ss')}</span>
-				花了<span>￥#{(bill.value * bill.quantity).toFixed(2)}</span>
-				购买了<span id="num">#{bill.quantity}</span>件<span class="good_name">#{bill.goods_title}</span>
-			</li>
+		<div style="float:left;margin-right:30px;">
+	        <h2>以下是您的购买记录：</h2>
+		    <?js if(it.vd.bills && it.vd.bills.length){ ?>
+			<p>您总共消费了 <span id="t_price" style="font-weight:bold;">￥ #{(it.req.user.stat_total.value||0).toFixed(2)}</span></p>
+	        <ul>
+	        	<?js for(var i=0, l=it.vd.bills.length; i<l; i++){
+					 var bill = it.vd.bills[i];
+				?>
+				<li>
+					您在<span class="buy_time">#{bill.created_at.format('yyyy-MM-dd hh:mm:ss')}</span>
+					花了<span>￥#{(bill.value * bill.quantity).toFixed(2)}</span>
+					购买了<span class="num">#{bill.quantity}</span>件<span class="good_name">#{bill.goods_title}</span>
+				</li>
+				<?js } ?>
+			</ul>
+			<?js }else{ ?>
+				<p>你暂时没有任何购买记录</p>
 			<?js } ?>
-		</ul>
-		<?js }else{ ?>
-			<p>你暂时没有任何购买记录</p>
-		<?js } ?>
+		</div>
+		
+		<div style="float:left;">
+	        <h2>以下是您的结算记录：</h2>
+		    <?js if(it.vd.payments && it.vd.payments.length){ ?>
+	        <ul>
+	        	<?js for(var i=0, l=it.vd.payments.length; i<l; i++){
+					 var pay = it.vd.payments[i];
+				?>
+				<li>
+					结算于 #{pay.created_at.format('yyyy-MM-dd hh:mm:ss')}: 
+					<span>￥#{pay.money}</span>
+					(<span><?js if(pay.payment_type=='cash'){ ?>现金结算<?js }else{ ?>工资扣<?js } ?></span> :<?js if(pay.has_payed){ ?> <span style="color:green;">已付款</span> <?js }else{ ?> <span style="color:red;">未付款</span> <?js } ?>)
+				</li>
+				<?js } ?>
+			</ul>
+			<?js }else{ ?>
+				<p>你暂时没有任何结算记录</p>
+			<?js } ?>
+		</div>
     
     </div>
 	<script type="text/javascript" src="/static/js/jquery.1.4.min.js"></script>

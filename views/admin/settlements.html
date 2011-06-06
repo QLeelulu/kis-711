@@ -1,0 +1,61 @@
+{# admin_header.html #}
+
+	<a href="javascript:" class="minibutton blue" id="buildSettlement">生成结算</a>
+	<span id="building"></span>
+	<h4>结算记录</h4>
+	<div>
+	<?js if(it.vd.settlements && it.vd.settlements.length){ ?>
+	<table>
+		<tr>
+			<th>日期</th>
+			<th>操作者</th>
+			<th>操作</th>
+		</tr>
+		<?js for(var i=0, l=it.vd.settlements.length; i<l; i++){
+			 var slt = it.vd.settlements[i];
+		?>
+		<tr sid="#{slt._id}" >
+			<td class="specalt">#{slt.created_at.format('yyyy-MM-dd hh:mm:ss')}</td>
+			<td>#{slt.operator}</td>
+			<td>
+				<a href="/admin/settlement_show/#{slt._id}">查看列表</a> &nbsp;&nbsp; 
+				<a href="/admin/settlement_show/#{slt._id}?print=true" target="_blank">打印</a>
+			</td>
+		</tr>
+		<?js } ?>
+	</table>
+	<?js }else{ ?>
+		<div style="color:red;">没有结算信息</div>
+	<?js } ?>
+	</div>
+	
+	<script type="text/javascript">
+		$("#buildSettlement").click(function(){
+			if (confirm('你确定要生成结算记录吗？')) {
+				var btn = $(this);
+				btn.attr('disabled', true);
+				$("#building").html('正在生成结算记录...');
+				$.ajax({
+					url: '/admin/settlement_add',
+					type: 'post',
+					success: function(r){
+						if (r.success) {
+							window.location.href = '/admin/settlement_show/' + r.settlement._id;
+						}else {
+							alert('生成结算记录失败：' + r.error);
+						}
+					},
+					error: function(){
+						alert('生成结算记录失败，请重试');
+					},
+					complete: function(){
+						$("#building").html('');
+						btn.removeAttr('disabled');
+					}
+				});
+			}
+		});
+	
+	</script>
+
+{# admin_footer.html #}

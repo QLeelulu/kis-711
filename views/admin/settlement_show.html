@@ -1,0 +1,136 @@
+{# admin_header.html #}
+
+	<h4>
+		#{it.vd.settlement.operator} 结算于 #{it.vd.settlement.created_at.format('yyyy-MM-dd hh:mm:ss')}
+		(<a href="/admin/settlement_show/#{it.vd.settlement._id}?print=true" target="_blank">打印</a>)
+	</h4>
+	<?js if(it.vd.settlement){ ?>
+	<div>
+	<?js if(it.vd.payments && it.vd.payments.length){ 
+		 var total = {
+		 	money: 0, //应收款项
+			payed: 0 //已收款项
+		 };
+	?>
+	结算方式:
+	<select id="selPayType">
+		<option value="all">全部</option>
+		<option value="cash" <?js if(it.vd.ptype=='cash'){ ?> selected="true" <?js } ?> >现金</option>
+		<option value="wage" <?js if(it.vd.ptype=='wage'){ ?> selected="true" <?js } ?>>工资扣</option>
+	</select>
+	<table id="payList">
+	  	<thead>
+			<tr>
+				<th>用户名</th>
+				<th>结算金额</th>
+				<th>结算方式</th>
+				<th>是否已付款</th>
+				<th>收款者</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?js for(var i=0, l=it.vd.payments.length; i<l; i++){
+				 var pay = it.vd.payments[i];
+				 total.money += pay.money;
+				 if(pay.has_payed){
+				 	total.payed += pay.money;
+				 }
+			?>
+			<tr payid="#{pay._id}" class="#{pay.payment_type}" >
+				<td class="specalt user_name">#{pay.payer}</td>
+				<td class="money">#{pay.money}</td>
+				<td>
+					<?js if(pay.payment_type=='cash'){ ?>现金<?js }else if(pay.payment_type=='wage'){ ?>工资扣<?js }else{ ?>默认-工资扣<?js } ?>
+				</td>
+				<td class="has_payed">
+					<?js if(pay.has_payed){ ?>
+						<span style="color:green;">已付款</span>
+					<?js }else{ ?>
+						<span style="color:red;">未付</span>
+					<?js } ?>
+				</td>
+				<td class="receiver">
+				<?js if(pay.has_payed){ ?>
+					#{pay.receiver}
+				<?js }else{ ?>
+					<?js if(pay.payment_type=='cash'){ ?>
+						<button class="minibutton green btnReceiv">确认收款</button>
+					<?js }else{ ?>
+						-
+					<?js } ?>
+				<?js } ?>
+				</td>
+			</tr>
+			<?js } ?>
+			<tr>
+				<th>合计</th>
+				<th class="specalt" colspan="15">
+					应收金额：￥#{total.money}<br/>
+					已收金额：￥#{total.payed} <br/>
+					未收金额：￥#{total.money-total.payed}
+				</th>
+			</tr>
+		</tbody>
+	</table>
+	<?js }else{ ?>
+		<div style="color:red;">没有结算信息</div>
+	<?js } ?>
+	</div>
+	<?js }else{ ?>
+		<div style="color:red;">结算信息不存在</div>
+	<?js } ?>
+	
+	<script type="text/javascript">
+		//var settlementId = '';
+		$("#selPayType").change(function(){
+			var t = $(this).val();
+			if(t=='cash'){
+				window.location.href = window.location.pathname + '?ptype=cash';
+				
+				//$("#payList tbody tr").hide();
+				//$("#payList tbody tr.cash").show();
+			}else if(t=='wage'){
+				window.location.href = window.location.pathname + '?ptype=wage';
+				
+				//$("#payList tbody tr").hide();
+				//$("#payList tbody tr.wage").show();
+			}else{
+				//$("#payList tbody tr").show();
+				window.location.href = window.location.pathname;
+			}
+		});
+		
+		$("#payList .btnReceiv").click(function(){
+			var btn = $(this),
+				tr = btn.closest('tr'),
+				money = tr.find('td.money').text(),
+				userName = tr.find('td.user_name').text();
+			
+			if(confirm('你确定收到“'+ userName +'”的 '+ money +' 元吗？')){
+				btn.attr('disabled', true);
+				$.ajax({
+					url: '/admin/settlement_pay',
+					type: 'post',
+					data: {'payment_id':tr.attr('payid')},
+					dateType: 'json',
+					success: function(r){
+						if(r.success){
+							tr.find('td.has_payed').html('<span style="color:green;">已付款</span>');
+							tr.find('td.receiver').html(r.receiver);
+						}else{
+							alert('确认收款失败：' + r.error);
+						}
+					},
+					error: function(){
+						alert('确认收款失败，请重试');
+					},
+					complete: function(){
+						btn.removeAttr('disabled');
+					}
+				});
+			}
+		});
+	
+	</script>
+
+{# admin_footer.html #}

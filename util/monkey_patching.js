@@ -69,9 +69,12 @@ Combo.prototype = {
   },
   finishOne: function () {
     this.items--;
-    if (this.items == 0) {
-      this.callback.apply(this);
-    }
+    this.check();
+  },
+  check: function(){
+      if (this.items == 0) {
+        this.callback.apply(this);
+      }
   }
 };
 global.Combo = Combo;

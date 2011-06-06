@@ -1,0 +1,83 @@
+<!DOCTYPE />
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<style>
+		body *{font-size:13px;}
+		table {
+			padding: 0; 
+			margin: 0;
+			border-spacing:0;
+		}
+		th{padding:3px 8px;text-align:left;}
+		td { 
+			border-top: 1px solid;
+			padding: 6px 6px 6px 12px;
+		} 
+	</style>
+	<script type="text/javascript">
+		function changeCtype(t){
+			if(t=='cash'){
+				window.location.href = window.location.pathname + '?print=true&ptype=cash';
+			}else if(t=='wage'){
+				window.location.href = window.location.pathname + '?print=true&ptype=wage';
+			}else{
+				window.location.href = window.location.pathname + '?print=true';
+			}
+		};
+	
+	</script>
+</head>
+<body>
+	<h4>
+		#{it.vd.settlement.operator} 结算于 #{it.vd.settlement.created_at.format('yyyy-MM-dd hh:mm:ss')}
+	</h4>
+	<?js if(it.vd.settlement){ ?>
+	<div>
+	<?js if(it.vd.payments && it.vd.payments.length){ ?>
+	结算方式:
+	<select id="selPayType" onchange="changeCtype(this.options[this.options.selectedIndex].value)">
+		<option value="all">全部</option>
+		<option value="cash" <?js if(it.vd.ptype=='cash'){ ?> selected="true" <?js } ?> >现金</option>
+		<option value="wage" <?js if(it.vd.ptype=='wage'){ ?> selected="true" <?js } ?>>工资扣</option>
+	</select>
+	<table id="payList">
+	  	<thead>
+			<tr>
+				<th>用户名</th>
+				<th>结算金额</th>
+				<th>结算方式</th>
+				<th>是否已付款</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?js for(var i=0, l=it.vd.payments.length; i<l; i++){
+				 var pay = it.vd.payments[i];
+			?>
+			<tr payid="#{pay._id}" class="#{pay.payment_type}" >
+				<td class="specalt user_name">#{pay.payer}</td>
+				<td class="money">￥#{pay.money}</td>
+				<td>
+					<?js if(pay.payment_type=='cash'){ ?>现金<?js }else if(pay.payment_type=='wage'){ ?>工资扣<?js }else{ ?>默认-工资扣<?js } ?>
+				</td>
+				<td class="has_payed">
+					<?js if(pay.has_payed){ ?>
+						<input type="checkbox" checked="true" />
+					<?js }else{ ?>
+						<input type="checkbox" />
+					<?js } ?>
+				</td>
+			</tr>
+			<?js } ?>
+		</tbody>
+	</table>
+	<?js }else{ ?>
+		<div style="color:red;">没有结算信息</div>
+	<?js } ?>
+	</div>
+	<?js }else{ ?>
+		<div style="color:red;">结算信息不存在</div>
+	<?js } ?>
+	
+</body>
+</html>
