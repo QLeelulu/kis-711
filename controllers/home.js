@@ -3,7 +3,8 @@
  * @blog http://qleelulu.cnblogs.com
  */
  
-var goodsModel = require('../models/goods');
+var paymentModel = require('../models/payment'),
+    goodsModel = require('../models/goods');
 
 exports.index = function(fnNext){
     var _t = this,
@@ -26,4 +27,17 @@ exports.index = function(fnNext){
         r.re_goods = goods;
         combo.finishOne();
     });
+    
+    if(this.req.user){
+        combo.add();
+        paymentModel.find({
+                payer:_t.req.user.name, 
+                payment_type:'cash',
+                has_payed: {$ne: true}
+            }).count(function(err, count){
+                r.needCashPay = count;
+                combo.finishOne();
+            }
+        );
+    }
 };
