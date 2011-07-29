@@ -83,6 +83,34 @@ exports.settlement_pay_post = function(fnNext){
 };
 
 /********
+ * 确认工资扣款
+ */
+exports.settlement_wage_pay_post = function(fnNext){
+    var _t = this,
+        r = {'success':false},
+        settlementId = _t.req.post.settlement_id;
+    if(settlementId){
+        paymentModel.update({settlement_id: paymentModel.id(settlementId)}, {'$set': {has_payed: true, receiver:_t.req.user.name} }, {safe:true, multi:true}, 
+            function(err, count){
+                if(err || !count){
+                	console.log(settlementId)
+                	console.log(err)
+                    r.error = '更新数据库失败';
+                }else{
+                    r.success = true;
+                    r.receiver = _t.req.user.name;
+                    r.count = count;
+                }
+                fnNext( _t.ar.json(r) );
+            }
+        );
+    }else{
+        r.error = '参数错误';
+        fnNext( _t.ar.json(r) );
+    }
+};
+
+/********
  * 生成结算记录
  */
 exports.settlement_add_post = function(fnNext){

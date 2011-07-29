@@ -19,7 +19,8 @@
 			<td>#{slt.operator}</td>
 			<td>
 				<a href="/admin/settlement_show/#{slt._id}">查看列表</a> &nbsp;&nbsp; 
-				<a href="/admin/settlement_show/#{slt._id}?print=true" target="_blank">打印</a>
+				<a href="/admin/settlement_show/#{slt._id}?print=true" target="_blank">打印</a> &nbsp;&nbsp; 
+				<a href="javascript:" class="wage_pay_btn" sid="#{slt._id}">工资扣款确认</a>
 			</td>
 		</tr>
 		<?js } ?>
@@ -54,6 +55,35 @@
 					}
 				});
 			}
+		});
+		
+		$(".wage_pay_btn").click(function(){
+			if (!confirm('你确定已经从工资扣款了吗？')) {
+				return;
+			}
+			var btn = $(this),
+				sid = btn.attr('sid');
+			btn.attr('disabled', true);
+			$("#building").html('正在确认工资扣款记录...');
+			$.ajax({
+				url: '/admin/settlement_wage_pay',
+				type: 'post',
+				data: {settlement_id: sid},
+				success: function(r){
+					if (r.success) {
+						window.location.href = '/admin/settlement_show/' + sid + '?ptype=wage';
+					}else {
+						alert('从工资扣款失败：' + r.error);
+					}
+				},
+				error: function(){
+					alert('从工资扣款失败，请重试');
+				},
+				complete: function(){
+					$("#building").html('');
+					btn.removeAttr('disabled');
+				}
+			});
 		});
 	
 	</script>
