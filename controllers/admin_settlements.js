@@ -65,7 +65,7 @@ exports.settlement_pay_post = function(fnNext){
         r = {'success':false},
         paymentId = _t.req.post.payment_id;
     if(paymentId){
-        paymentModel.updateById(paymentId, {'$set': {has_payed: true, receiver:_t.req.user.name} }, {safe:true}, 
+        paymentModel.updateById(paymentId, {'$set': {has_payed: true, receiver:_t.req.user.name, updated_at:(new Date())} }, {safe:true}, 
             function(err, pay){
                 if(err || !pay){
                     r.error = '更新数据库失败';
@@ -90,7 +90,7 @@ exports.settlement_wage_pay_post = function(fnNext){
         r = {'success':false},
         settlementId = _t.req.post.settlement_id;
     if(settlementId){
-        paymentModel.update({settlement_id: paymentModel.id(settlementId)}, {'$set': {has_payed: true, receiver:_t.req.user.name} }, {safe:true, multi:true}, 
+        paymentModel.update({settlement_id: paymentModel.id(settlementId), payment_type:'wage'}, {'$set': {has_payed: true, receiver:_t.req.user.name, updated_at:(new Date())} }, {safe:true, multi:true}, 
             function(err, count){
                 if(err || !count){
                 	console.log(settlementId)
