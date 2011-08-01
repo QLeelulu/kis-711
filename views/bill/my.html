@@ -37,11 +37,12 @@
 	        <ul>
 	        	<?js for(var i=0, l=it.vd.payments.length; i<l; i++){
 					 var pay = it.vd.payments[i];
+					  var payDes = '付';
 				?>
 				<li>
 					结算于 #{pay.created_at.format('yyyy-MM-dd hh:mm:ss')}: 
 					<span>￥#{pay.money}</span>
-					(<span><?js if(pay.payment_type=='cash'){ ?>现金结算<?js }else{ ?>工资扣<?js } ?></span> :<?js if(pay.has_payed){ ?> <span style="color:green;">已付款</span> <?js }else{ ?> <span style="color:red;">未付款</span> <?js } ?>)
+					(<span><?js if(pay.payment_type=='cash'){ ?>现金结算<?js }else{  payDes = '扣'; ?>工资扣<?js } ?></span> :<?js if(pay.has_payed){ ?> <span style="color:green;">已#{payDes}款</span> <?js }else{ ?> <span style="color:red;">未#{payDes}款</span> <?js } ?>)
 				</li>
 				<?js } ?>
 			</ul>
